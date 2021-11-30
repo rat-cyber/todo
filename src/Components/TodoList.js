@@ -60,7 +60,7 @@ const TodoList = () => {
                       aria-current="page"
                       onClick={() => userdetails(user)}
                     >
-                      Active link
+                     View user
                     </a>
                   </div>
                 </td>
