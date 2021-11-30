@@ -2,19 +2,15 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const TodoList = () => {
-  const [Data, setData] = useState([
-    {
-      userId: null,
-      id: null,
-      title: null,
-      completed: null,
-    },
-  ]);
+  const [Data, setData] = useState([]);
+    const [IdTital, setIdTital] = useState()
+  const [Userdata, setUserdata] = useState(null);
+
   useEffect(() => {
     axios
       .get("https://jsonplaceholder.typicode.com/todos")
+
       .then((res) => {
-       console.log(res.data[0].complete)
         setData(res.data);
       })
       .catch((error) => {
@@ -22,20 +18,22 @@ const TodoList = () => {
       });
   }, []);
 
-  
-  console.log(Data)
-  
-  const users = [
-    {
-      userId: 1,
-      id: 2,
-      title: "delectus aut autem",
-      completed: false,
-    },
-  ];
+  const userdetails = async (id) => {
+    try {
+      const res = await axios.get(
+        `https://jsonplaceholder.typicode.com/users/${id.userId}`
+      );
+      console.log(res.data);
+      console.log(id);
+      setIdTital(id)
+      setUserdata(res.data);
+    } catch (error) {
+      console.log(error.responce);
+    }
+  };
   return (
-    <div>
-      <table class="table table-striped">
+    <div className="d-flex flex-row  ">
+      <table className="  table table-striped">
         <thead>
           <tr>
             <th scope="col">Id</th>
@@ -45,26 +43,22 @@ const TodoList = () => {
           </tr>
         </thead>
 
-        {Data.map((user, id) => {
+        {Data?.map((user, id) => {
           return (
             <tbody key={id}>
               <tr>
-                <th scope="row">{user.id}</th>
-                <td> {user.title}</td>
+                <th scope="row">{user?.id}</th>
+                <td> {user?.title}</td>
+
+                <td>{user?.completed ? "complete" : "incomplete"}</td>
 
                 <td>
-                  { user.completed}
-                    {/* // (user.completed ===  true
-                    //   ? (user.completed = "incomplete")
-                    //   : (user.completed = "complete"), */}
-                   
-                </td>
-                <td>
-                  <div class="btn-group">
+                  <div className="btn-group">
                     <a
                       href="#"
-                      class="btn btn-primary active"
+                      className="btn btn-primary active"
                       aria-current="page"
+                      onClick={() => userdetails(user)}
                     >
                       Active link
                     </a>
@@ -75,6 +69,31 @@ const TodoList = () => {
           );
         })}
       </table>
+      <div className=" container">
+        <h1>User Detail</h1>
+        <div className="border-top   border-dark text-center  ">
+          <div className="d-flex flex-row justify-content-between">
+            <span>ToDo Id</span>
+            <div>{IdTital?.id} </div>
+          </div>
+          <div className="d-flex flex-row justify-content-between">
+            <span>ToDo Title</span>
+            <div>{IdTital?.title}</div>
+          </div>
+          <div className="d-flex flex-row justify-content-between">
+            <span>User Id</span>
+            <div>{Userdata?.id}</div>
+          </div>
+          <div className="d-flex flex-row justify-content-between">
+            <span> Name</span>
+            <div>{Userdata?.name}</div>
+          </div>
+          <div className="d-flex flex-row justify-content-between">
+            <span>Email</span>
+            <div>{Userdata?.email}</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
